@@ -1,17 +1,11 @@
-FROM node:18-alpine As build
+FROM node:18-alpine as base
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY --chown=node:node package*.json ./
+COPY ./ ./
 
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+RUN npm install
 
-COPY --chown=node:node . .
+FROM base as production
 
-RUN npm run build
-
-ENV NODE_ENV production
-
-RUN npm ci --only=production && npm cache clean --force
-
-USER node
+CMD ["node", "dist/main.js"]
