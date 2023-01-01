@@ -1,8 +1,16 @@
 version: "3"
 services:
-  redis-server:
-    image: "redis"
-  node-app:
-    build: .
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Only will build development stage from our dockerfile
+      target: development
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    # Run a command against the development stage of the image
+    command: npm run start:dev
     ports:
-      - "5050:8080"
+      - 3000:3000
